@@ -23,14 +23,13 @@
 }
 *{ margin:0; padding:0; box-sizing:border-box; }
 html{ scroll-behavior:smooth; scroll-padding-top:calc(var(--nav-h) + 12px); }
+
+/* ONE sky for the whole site: same while scrolling */
 body{
   font-family:var(--font-body); font-size:1.19rem; line-height:1.75; color:var(--snow);
-  background:
-    radial-gradient(1100px 700px at 50% -10%, rgba(64,112,168,.22), transparent 60%),
-    radial-gradient(900px 600px at 10% 30%, rgba(79,159,212,.1), transparent 58%),
-    radial-gradient(1200px 900px at 85% 110%, rgba(70,48,110,.18), transparent 60%),
-    linear-gradient(180deg, #081226 0%, var(--ink) 40%, #020409 100%);
-  background-attachment:fixed; overflow-x:hidden;
+  background:linear-gradient(180deg, #0a1428 0%, #070e1e 45%, #040810 100%);
+  background-attachment:fixed;
+  overflow-x:hidden;
 }
 body.locked{ height:100vh; overflow:hidden; }
 ::selection{ background:var(--violet-deep); color:var(--snow); }
@@ -42,19 +41,19 @@ a{ color:var(--ice); text-decoration:none; }
 #gate{
   position:fixed; inset:0; z-index:100;
   display:grid; place-items:center; text-align:center;
-  background:radial-gradient(60% 55% at 50% 40%, #0a1630, #02030a 78%);
+  background:linear-gradient(180deg, #0a1428, #040810);
   transition:opacity 1.1s var(--ease), visibility 1.1s;
 }
 #gate.hide{ opacity:0; visibility:hidden; pointer-events:none; }
 .gate-box{ padding:1rem; }
-.gate-moon{
-  width:96px; margin:0 auto 1.6rem;
-  filter:drop-shadow(0 0 34px rgba(190,222,250,.55));
+.gate-mark{
+  width:64px; margin:0 auto 1.6rem; color:var(--ice);
+  filter:drop-shadow(0 0 22px rgba(169,221,247,.55));
   animation:gateGlow 4s ease-in-out infinite;
 }
 @keyframes gateGlow{
-  0%,100%{ filter:drop-shadow(0 0 22px rgba(190,222,250,.4)); }
-  50%    { filter:drop-shadow(0 0 44px rgba(190,222,250,.75)); }
+  0%,100%{ filter:drop-shadow(0 0 14px rgba(169,221,247,.4)); }
+  50%    { filter:drop-shadow(0 0 30px rgba(169,221,247,.8)); }
 }
 .gate-jp{
   font-family:var(--font-jp); font-weight:700;
@@ -85,15 +84,48 @@ a{ color:var(--ice); text-decoration:none; }
 }
 .gate-silent:hover{ color:rgba(238,245,255,.8); }
 
-#yt{ position:fixed; left:-9999px; top:-9999px; width:220px; height:124px; }
+/* ================= VISIBLE MUSIC PLAYER ================= */
+#playerBox{
+  position:fixed; right:1rem; bottom:1rem; z-index:60;
+  width:min(300px, 74vw);
+  border:1px solid var(--line); border-radius:8px; overflow:hidden;
+  background:rgba(6,10,22,.92);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  box-shadow:0 10px 34px rgba(2,4,10,.7), 0 0 22px rgba(169,221,247,.18);
+  display:none;
+}
+#playerBox.show{ display:block; }
+.player-head{
+  display:flex; align-items:center; gap:.6rem;
+  padding:.5rem .7rem;
+  border-bottom:1px solid rgba(169,221,247,.14);
+}
+.player-title{
+  flex:1; min-width:0;
+  font-family:var(--font-disp); font-size:.62rem; letter-spacing:.18em;
+  color:rgba(238,245,255,.8);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.player-head button{
+  width:24px; height:24px; flex:none; cursor:pointer;
+  display:grid; place-items:center;
+  background:none; border:1px solid var(--line); border-radius:4px;
+  color:var(--ice); font-size:.8rem; line-height:1;
+  touch-action:manipulation;
+}
+.player-head button:hover{ border-color:var(--ice); color:var(--snow); }
+.player-slot{ position:relative; width:100%; aspect-ratio:16/9; background:#000; }
+.player-slot iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+#playerBox.min .player-slot{ aspect-ratio:auto; height:2px; opacity:0; }
+#playerBox.min{ border-bottom:none; }
 
 .toast{
   position:fixed; left:50%; bottom:1.4rem; z-index:90;
   transform:translateX(-50%) translateY(20px);
-  max-width:min(92vw, 480px);
+  max-width:min(92vw, 500px);
   padding:.85rem 1.2rem; border-radius:6px;
   border:1px solid var(--line);
-  background:rgba(8,12,26,.92);
+  background:rgba(8,12,26,.94);
   -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
   font-size:1rem; color:rgba(238,245,255,.9); text-align:center;
   opacity:0; pointer-events:none;
@@ -102,7 +134,8 @@ a{ color:var(--ice); text-decoration:none; }
 .toast.show{ opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
 .toast a{ color:var(--ice); border-bottom:1px dotted var(--ice); }
 
-#snow{ position:fixed; inset:0; width:100%; height:100%; z-index:2; pointer-events:none; }
+/* stars + snow over the whole page, behind content */
+#snow{ position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; }
 .page{ position:relative; z-index:1; }
 
 /* ================= NAV ================= */
@@ -111,7 +144,7 @@ a{ color:var(--ice); text-decoration:none; }
   height:var(--nav-h);
   display:flex; align-items:center; justify-content:space-between;
   gap:1rem; padding:0 clamp(1rem, 4vw, 2.5rem);
-  background:rgba(4,7,16,.72);
+  background:rgba(5,9,20,.72);
   -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line);
 }
@@ -165,54 +198,13 @@ a{ color:var(--ice); text-decoration:none; }
 .nav-links a:hover::after,
 .nav-links a[aria-current="true"]::after{ transform:scaleX(1); }
 
-/* ================= HERO ================= */
+/* ================= HERO : just the sky and the name ================= */
 .hero{
   position:relative; min-height:100svh;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   text-align:center;
-  padding:calc(var(--nav-h) + 2rem) 1.25rem 7rem;
-  overflow:hidden;
-  background:radial-gradient(60% 45% at 50% 22%, rgba(90,130,180,.14), transparent 62%);
+  padding:calc(var(--nav-h) + 2rem) 1.25rem 5rem;
 }
-.hero-fx{ position:absolute; inset:0; pointer-events:none; }
-.moon{
-  position:absolute; left:50%;
-  top:clamp(3.2rem, 8vh, 6rem);
-  width:clamp(250px, 44vw, 540px);
-  transform:translate(calc(-50% + var(--mx, 0px)), var(--my, 0px));
-  transition:transform .35s ease-out;
-  animation:moonBreath 9s ease-in-out infinite;
-}
-@keyframes moonBreath{
-  0%,100%{ filter:drop-shadow(0 0 40px rgba(190,222,250,.3)); }
-  50%    { filter:drop-shadow(0 0 85px rgba(190,222,250,.55)); }
-}
-.ruins-far{
-  position:absolute; left:0; bottom:0; width:100%;
-  height:clamp(220px, 36vh, 430px);
-  transform:translateX(var(--fx, 0px));
-  transition:transform .35s ease-out;
-  opacity:.96;
-}
-.ruins-near{
-  position:absolute; left:0; bottom:-2px; width:100%;
-  height:clamp(110px, 20vh, 240px);
-  transform:translateX(var(--nx, 0px));
-  transition:transform .35s ease-out;
-}
-.mist{
-  position:absolute; left:50%; bottom:clamp(80px, 15vh, 190px);
-  width:130%; height:230px; transform:translateX(-50%);
-  background:radial-gradient(50% 100% at 50% 100%, rgba(169,221,247,.18), transparent 70%);
-  filter:blur(34px);
-  animation:mistPulse 11s ease-in-out infinite;
-}
-@keyframes mistPulse{ 0%,100%{ opacity:.55; } 50%{ opacity:.95; } }
-.hero-veil{
-  position:absolute; inset:0;
-  background:radial-gradient(130% 100% at 50% 36%, transparent 52%, rgba(2,4,10,.62) 100%);
-}
-.hero-inner{ position:relative; max-width:900px; margin-top:clamp(9rem, 26vh, 16rem); }
 .hero-rank{
   font-family:var(--font-jp); font-weight:500;
   letter-spacing:.6em; font-size:.92rem;
@@ -265,7 +257,7 @@ a{ color:var(--ice); text-decoration:none; }
 }
 .hero-scroll{
   position:absolute; bottom:1.6rem; left:50%; transform:translateX(-50%);
-  color:rgba(169,221,247,.6); z-index:2;
+  color:rgba(169,221,247,.6);
   font-family:var(--font-jp); letter-spacing:.4em; font-size:.75rem;
   writing-mode:vertical-rl;
   animation:driftDown 2.8s ease-in-out infinite;
@@ -275,8 +267,8 @@ a{ color:var(--ice); text-decoration:none; }
   50%    { transform:translate(-50%,10px); opacity:1; }
 }
 
-/* ================= SHARED ================= */
-section{ position:relative; padding:clamp(4.5rem, 9vw, 7.5rem) 1.25rem; }
+/* ================= SHARED : sections are transparent, same sky ================= */
+section{ position:relative; padding:clamp(4.5rem, 9vw, 7.5rem) 1.25rem; background:transparent; }
 .shell{ max-width:1060px; margin:0 auto; }
 .sec-mark{
   font-family:var(--font-jp); font-weight:700;
@@ -389,15 +381,7 @@ section{ position:relative; padding:clamp(4.5rem, 9vw, 7.5rem) 1.25rem; }
 }
 .blade-truth b{ color:var(--ice); font-weight:600; }
 
-/* ================= BANKAI ================= */
-.bankai{
-  background:
-    radial-gradient(900px 480px at 50% 0%, rgba(238,245,255,.1), transparent 70%),
-    radial-gradient(700px 420px at 15% 100%, rgba(154,123,220,.14), transparent 70%),
-    linear-gradient(180deg, rgba(238,245,255,.045), rgba(238,245,255,.015));
-  border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);
-}
+/* ================= BANKAI (same sky, no special background) ================= */
 .bankai-grid{
   display:grid; grid-template-columns:auto 1fr;
   gap:clamp(2rem, 6vw, 5rem); align-items:center;
@@ -518,12 +502,12 @@ section{ position:relative; padding:clamp(4.5rem, 9vw, 7.5rem) 1.25rem; }
   font-size:.68rem; letter-spacing:.26em; color:var(--violet);
 }
 
-/* ================= FOOTER ================= */
+/* ================= FOOTER (same sky) ================= */
 footer{
   position:relative; z-index:1;
   padding:3.2rem 1.25rem 2.6rem; text-align:center;
   border-top:1px solid var(--line);
-  background:rgba(2,4,10,.6);
+  background:transparent;
 }
 .foot-seal{ width:34px; height:34px; margin:0 auto 1rem; color:var(--ice); opacity:.85; }
 .foot-jp{
@@ -538,7 +522,7 @@ footer{
   .nav-links{
     position:fixed; top:var(--nav-h); left:0; right:0;
     flex-direction:column; gap:0;
-    background:rgba(4,7,16,.96);
+    background:rgba(5,9,20,.96);
     border-bottom:1px solid var(--line);
     max-height:0; overflow:hidden;
     transition:max-height .4s var(--ease);
@@ -547,7 +531,6 @@ footer{
   .nav-links li{ border-top:1px solid rgba(169,221,247,.1); }
   .nav-links a{ display:block; padding:1rem 1.4rem; }
   .nav-links a::after{ display:none; }
-  .hero-inner{ margin-top:clamp(12rem, 34vh, 16rem); }
   .about-grid, .bankai-grid{ grid-template-columns:1fr; }
   .about-kanji, .bankai-kanji{
     writing-mode:horizontal-tb; letter-spacing:.3em;
@@ -591,11 +574,8 @@ footer{
 <!-- ================= ENTRY GATE ================= -->
 <div id="gate" role="dialog" aria-label="Enter the site">
   <div class="gate-box">
-    <svg class="gate-moon" viewBox="0 0 120 120" aria-hidden="true">
-      <circle cx="60" cy="60" r="36" fill="#eaf4ff"/>
-      <circle cx="77" cy="51" r="32" fill="#02030a"/>
-    </svg>
-    <p class="gate-jp">月ノ下デ、雪ハ唄ウ</p>
+    <svg class="gate-mark" aria-hidden="true"><use href="#flake"/></svg>
+    <p class="gate-jp" translate="no" lang="ja">月ノ下デ、雪ハ唄ウ</p>
     <p class="gate-en">Beneath the moon, the snow is singing.</p>
     <button type="button" class="gate-enter" id="enterMusic" onclick="__enterSite(true)">ENTER WITH MUSIC</button>
     <button type="button" class="gate-silent" id="enterSilent" onclick="__enterSite(false)">enter in silence</button>
@@ -616,6 +596,7 @@ function __enterSite(withMusic){
     setTimeout(function(){ if (g.parentNode) g.parentNode.removeChild(g); }, 1300);
   }
   document.body.classList.remove('locked');
+  if (withMusic && window.__startMusic){ try{ window.__startMusic(); }catch(e){} }
   try{
     window.dispatchEvent(new CustomEvent('site-enter', { detail:{ music: !!withMusic } }));
   }catch(e){}
@@ -623,10 +604,116 @@ function __enterSite(withMusic){
 try{ document.getElementById('enterMusic').focus(); }catch(e){}
 </script>
 
-<!-- hidden YouTube audio player -->
-<div id="yt"></div>
+<!-- ============ MUSIC ENGINE ============ -->
+<script>
+(function(){
+  var YT_ID = 'E2c3V6nxjCw';
+  var mode = null;          // 'local' | 'yt'
+  var playing = false;
+  var localAudio = null;
+  var ytFrame = null;
 
-<!-- notice shown if YouTube refuses to play here -->
+  function $(id){ return document.getElementById(id); }
+
+  function updateBtn(){
+    var b = $('musicBtn');
+    if (!b) return;
+    b.classList.toggle('playing', playing);
+    b.classList.toggle('off', !playing);
+    b.setAttribute('aria-pressed', playing);
+  }
+  function setMinUI(min){
+    var box = $('playerBox'), m = $('playerMin');
+    if (!box) return;
+    box.classList.toggle('min', min);
+    if (m) m.textContent = min ? '+' : '−';
+  }
+  function buildYT(){
+    var box = $('playerBox'), slot = $('playerSlot');
+    if (!box || !slot) return;
+    if (!ytFrame){
+      ytFrame = document.createElement('iframe');
+      ytFrame.allow = 'autoplay; encrypted-media; picture-in-picture';
+      ytFrame.setAttribute('allowfullscreen', '');
+      ytFrame.title = 'Music player';
+      ytFrame.src = 'https://www.youtube.com/embed/' + YT_ID +
+        '?autoplay=1&loop=1&playlist=' + YT_ID + '&playsinline=1&rel=0';
+      slot.appendChild(ytFrame);
+      setMinUI(true);          /* video hidden on open; + reveals it */
+    }
+    box.classList.add('show');
+    playing = true;
+    updateBtn();
+  }
+  function destroyYT(){
+    var box = $('playerBox');
+    if (ytFrame && ytFrame.parentNode) ytFrame.parentNode.removeChild(ytFrame);
+    ytFrame = null;
+    if (box) box.classList.remove('show');
+    playing = false;
+    updateBtn();
+  }
+  function start(){
+    if (mode === 'local' && localAudio){
+      localAudio.play().catch(function(){});
+      playing = true; updateBtn(); return;
+    }
+    if (mode === 'yt'){ buildYT(); return; }
+    localAudio = new Audio('music.mp3');
+    localAudio.loop = true;
+    localAudio.volume = 0.85;
+    localAudio.play().then(function(){
+      mode = 'local';
+      playing = true; updateBtn();
+    }).catch(function(){
+      localAudio = null;
+      mode = 'yt';
+      buildYT();
+    });
+  }
+  function stop(){
+    if (mode === 'local' && localAudio){
+      localAudio.pause();
+      playing = false; updateBtn(); return;
+    }
+    destroyYT();
+  }
+
+  window.__startMusic = start;
+
+  function wire(){
+    var b = $('musicBtn');
+    if (b) b.addEventListener('click', function(){ playing ? stop() : start(); });
+    var minB = $('playerMin');
+    if (minB) minB.addEventListener('click', function(){
+      var box = $('playerBox');
+      setMinUI(!box.classList.contains('min'));
+    });
+    var closeB = $('playerClose');
+    if (closeB) closeB.addEventListener('click', stop);
+    if (window.__siteEntered && window.__wantMusic && !playing) start();
+  }
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', wire);
+  } else { wire(); }
+
+  window.addEventListener('site-enter', function(e){
+    if (e.detail && e.detail.music && !playing) start();
+  });
+})();
+</script>
+
+<!-- visible music player card (video collapsed by default) -->
+<div id="playerBox" aria-label="Music player">
+  <div class="player-head">
+    <span class="player-title" translate="no">♪ 「螺旋」 9LANA — BLEACH TYBW ED</span>
+    <button type="button" id="playerMin" aria-label="Show or hide video">+</button>
+    <button type="button" id="playerClose" aria-label="Stop music">✕</button>
+  </div>
+  <div class="player-slot" id="playerSlot"></div>
+</div>
+
+<!-- notice -->
 <div class="toast" id="toast" role="status"></div>
 
 <canvas id="snow" aria-hidden="true"></canvas>
@@ -635,7 +722,7 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 <nav class="nav" aria-label="Main">
   <a class="nav-brand" href="#top">
     <svg aria-hidden="true" style="color:var(--ice)"><use href="#flake"/></svg>
-    朽木ルキア
+    <span translate="no" lang="ja">朽木ルキア</span>
   </a>
   <div class="nav-right">
     <button type="button" class="music-btn off" id="musicBtn" title="「螺旋」 9Lana — BLEACH TYBW ED" aria-label="Play or pause music" aria-pressed="false">♪</button>
@@ -654,104 +741,25 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 
 <!-- ================= HERO ================= -->
 <header class="hero" id="top">
-  <div class="hero-fx" aria-hidden="true">
-
-    <svg class="moon" viewBox="0 0 440 440">
-      <defs>
-        <radialGradient id="halo" cx="50%" cy="50%" r="50%">
-          <stop offset="0"   stop-color="rgba(224,240,255,.5)"/>
-          <stop offset=".42" stop-color="rgba(169,221,247,.18)"/>
-          <stop offset=".72" stop-color="rgba(169,221,247,0)"/>
-        </radialGradient>
-        <radialGradient id="moonBody" cx="36%" cy="34%" r="82%">
-          <stop offset="0"   stop-color="#ffffff"/>
-          <stop offset=".45" stop-color="#eef6ff"/>
-          <stop offset=".78" stop-color="#cfe4f7"/>
-          <stop offset="1"   stop-color="#a9c8e4"/>
-        </radialGradient>
-        <mask id="cres">
-          <rect width="440" height="440" fill="#000"/>
-          <circle cx="220" cy="220" r="148" fill="#fff"/>
-          <circle cx="284" cy="196" r="136" fill="#000"/>
-        </mask>
-      </defs>
-      <circle cx="220" cy="220" r="220" fill="url(#halo)"/>
-      <g mask="url(#cres)">
-        <circle cx="220" cy="220" r="148" fill="url(#moonBody)"/>
-        <g fill="#bcd4ea" opacity=".55">
-          <circle cx="146" cy="152" r="16"/>
-          <circle cx="128" cy="228" r="22"/>
-          <circle cx="168" cy="298" r="13"/>
-          <circle cx="116" cy="188" r="9"/>
-          <circle cx="158" cy="252" r="7"/>
-          <circle cx="196" cy="330" r="10"/>
-        </g>
-        <g fill="#a9c3dd" opacity=".4">
-          <circle cx="150" cy="156" r="8"/>
-          <circle cx="132" cy="232" r="11"/>
-          <circle cx="171" cy="300" r="6"/>
-        </g>
-      </g>
-    </svg>
-
-    <svg class="ruins-far" viewBox="0 0 1440 430" preserveAspectRatio="xMidYMax slice">
-      <defs>
-        <pattern id="win" width="26" height="34" patternUnits="userSpaceOnUse">
-          <rect x="5" y="7" width="12" height="17" fill="#10223f"/>
-        </pattern>
-      </defs>
-      <g fill="#081326">
-        <path d="M-20 430 V218 L44 200 L52 150 L126 138 L138 212 L176 202 L186 430 Z"/>
-        <path d="M240 430 V124 L302 98 L314 42 L354 62 L346 142 L392 152 L384 430 Z"/>
-        <rect x="258" y="150" width="112" height="270" fill="url(#win)" opacity=".5"/>
-        <g transform="rotate(-9 1050 300)">
-          <path d="M980 430 V86 L1016 70 L1040 86 L1072 56 L1110 66 L1150 50 V430 Z"/>
-          <rect x="996" y="96" width="138" height="324" fill="url(#win)" opacity=".45"/>
-        </g>
-        <path d="M1270 430 V164 L1322 142 L1362 62 L1420 92 L1440 82 V430 Z"/>
-        <rect x="1286" y="180" width="120" height="240" fill="url(#win)" opacity=".4"/>
-        <path d="M420 430 V350 L520 322 L600 356 L700 318 L800 360 L900 330 L960 430 Z"/>
-      </g>
-    </svg>
-
-    <div class="mist"></div>
-
-    <svg class="ruins-near" viewBox="0 0 1440 240" preserveAspectRatio="xMidYMax slice">
-      <g fill="#02050d">
-        <path d="M0 240 V172 L90 150 L142 182 L222 130 L302 192 L362 160 L432 202
-                 L522 140 L602 212 L706 170 L792 216 L882 160 L966 206 L1052 150
-                 L1142 202 L1232 155 L1322 196 L1440 150 V240 Z"/>
-        <path d="M330 198 L560 120 L574 132 L352 214 Z"/>
-        <path d="M900 207 L1010 118 L1026 128 L930 217 Z"/>
-        <path d="M650 212 L690 88 L706 212 Z"/>
-      </g>
-    </svg>
-
-    <div class="hero-veil"></div>
-  </div>
-
-  <div class="hero-inner">
-    <p class="hero-rank reveal">護廷十三隊 十三番隊隊長</p>
-    <h1 class="hero-name-jp reveal" style="--d:.15s">朽木 ルキア</h1>
-    <p class="hero-name-en reveal" style="--d:.3s">RUKIA KUCHIKI</p>
-    <p class="hero-sub reveal" style="--d:.42s">THE SLEEVED WHITE SNOW</p>
-    <p class="hero-tagline reveal" style="--d:.54s">
-      In the Soul Society, the moon does not battle the darkness.<br>
-      It simply rises, <b>and the darkness kneels.</b>
-    </p>
-    <a class="hero-cta reveal" style="--d:.66s" href="#zanpakuto">UNSHEATHE THE BLADE</a>
-  </div>
-
-  <span class="hero-scroll" aria-hidden="true">舞え</span>
+  <p class="hero-rank reveal" translate="no" lang="ja">護廷十三隊 十三番隊隊長</p>
+  <h1 class="hero-name-jp reveal" style="--d:.15s" translate="no" lang="ja">朽木 ルキア</h1>
+  <p class="hero-name-en reveal" style="--d:.3s" translate="no">RUKIA KUCHIKI</p>
+  <p class="hero-sub reveal" style="--d:.42s">THE SLEEVED WHITE SNOW</p>
+  <p class="hero-tagline reveal" style="--d:.54s">
+    In the Soul Society, the moon does not battle the darkness.<br>
+    It simply rises, <b>and the darkness kneels.</b>
+  </p>
+  <a class="hero-cta reveal" style="--d:.66s" href="#zanpakuto">UNSHEATHE THE BLADE</a>
+  <span class="hero-scroll" aria-hidden="true" translate="no" lang="ja">舞え</span>
 </header>
 
 <!-- ================= ABOUT ================= -->
 <section id="about">
   <div class="shell">
-    <p class="sec-mark reveal">死神</p>
+    <p class="sec-mark reveal" translate="no" lang="ja">死神</p>
     <h2 class="sec-title reveal">A Soul Forged in Snow</h2>
     <div class="about-grid">
-      <div class="about-kanji reveal" aria-hidden="true">白雪の魂</div>
+      <div class="about-kanji reveal" aria-hidden="true" translate="no" lang="ja">白雪の魂</div>
       <div class="about-body">
         <p class="reveal">
           Before the white haori, before the noble name, there was only a stray soul in
@@ -804,10 +812,10 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 <!-- ================= ZANPAKUTO ================= -->
 <section id="zanpakuto" class="center">
   <div class="shell">
-    <p class="sec-mark reveal">斬魄刀</p>
+    <p class="sec-mark reveal" translate="no" lang="ja">斬魄刀</p>
     <h2 class="sec-title reveal">The Most Beautiful Blade in Soul Society</h2>
-    <h3 class="blade-name reveal" style="--d:.1s">袖白雪</h3>
-    <p class="blade-romaji reveal" style="--d:.18s">SODE NO SHIRAYUKI, THE SLEEVED WHITE SNOW</p>
+    <h3 class="blade-name reveal" style="--d:.1s" translate="no" lang="ja">袖白雪</h3>
+    <p class="blade-romaji reveal" style="--d:.18s" translate="no">SODE NO SHIRAYUKI, THE SLEEVED WHITE SNOW</p>
     <p class="sec-intro reveal" style="--d:.26s">
       When released, the blade, guard and ribbon turn a flawless white, a sword so pure
       that the Shinigami of the Seireitei call it the most beautiful zanpakuto ever to
@@ -819,8 +827,8 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
     <div class="dances">
       <article class="dance reveal" data-kanji="月">
         <p class="dance-step">FIRST DANCE</p>
-        <h4 class="dance-kanji">初の舞 月白</h4>
-        <p class="dance-name">SOME NO MAI, TSUKISHIRO</p>
+        <h4 class="dance-kanji" translate="no" lang="ja">初の舞 月白</h4>
+        <p class="dance-name" translate="no">SOME NO MAI, TSUKISHIRO</p>
         <p>
           A circle of moonlight is drawn upon the earth. Ground, air, and the soul
           standing within the pale ring are sealed in a pillar of ice that climbs
@@ -830,8 +838,8 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 
       <article class="dance reveal" style="--d:.12s" data-kanji="漣">
         <p class="dance-step">NEXT DANCE</p>
-        <h4 class="dance-kanji">次の舞 白漣</h4>
-        <p class="dance-name">TSUGI NO MAI, HAKUREN</p>
+        <h4 class="dance-kanji" translate="no" lang="ja">次の舞 白漣</h4>
+        <p class="dance-name" translate="no">TSUGI NO MAI, HAKUREN</p>
         <p>
           Four points of frozen light pierce the ground. One breath. Then a white
           ripple becomes an avalanche, a tidal wave of snow and ice that devours
@@ -841,8 +849,8 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 
       <article class="dance reveal" style="--d:.24s" data-kanji="刀">
         <p class="dance-step">THIRD DANCE</p>
-        <h4 class="dance-kanji">参の舞 白刀</h4>
-        <p class="dance-name">SAN NO MAI, SHIRAFUNE</p>
+        <h4 class="dance-kanji" translate="no" lang="ja">参の舞 白刀</h4>
+        <p class="dance-name" translate="no">SAN NO MAI, SHIRAFUNE</p>
         <p>
           Even broken, this blade does not yield. Snow gathers upon the shattered
           edge and reforges it in ice, a sword of moonlight that pierces and
@@ -861,12 +869,12 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 </section>
 
 <!-- ================= BANKAI ================= -->
-<section id="bankai" class="bankai">
+<section id="bankai">
   <div class="shell bankai-grid">
-    <div class="bankai-kanji reveal" aria-hidden="true">白霞罸</div>
+    <div class="bankai-kanji reveal" aria-hidden="true" translate="no" lang="ja">白霞罸</div>
     <div>
-      <p class="bankai-call reveal">卍解</p>
-      <h2 class="bankai-name reveal" style="--d:.08s">HAKKA NO TOGAME</h2>
+      <p class="bankai-call reveal" translate="no" lang="ja">卍解</p>
+      <h2 class="bankai-name reveal" style="--d:.08s" translate="no">HAKKA NO TOGAME</h2>
       <p class="bankai-sub reveal" style="--d:.16s">Punishment of the White Haze</p>
       <div class="bankai-body">
         <p class="reveal" style="--d:.24s">
@@ -903,7 +911,7 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 <!-- ================= KEY MOMENTS ================= -->
 <section id="moments">
   <div class="shell">
-    <p class="sec-mark reveal">記憶</p>
+    <p class="sec-mark reveal" translate="no" lang="ja">記憶</p>
     <h2 class="sec-title reveal">Key Moments in the Path of the Snow</h2>
     <p class="sec-intro reveal">
       Every soul in the Seireitei leaves footprints. Hers are written in frost.
@@ -1010,7 +1018,7 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 <!-- ================= QUOTES ================= -->
 <section id="quotes" class="center">
   <div class="shell">
-    <p class="sec-mark reveal">言霊</p>
+    <p class="sec-mark reveal" translate="no" lang="ja">言霊</p>
     <h2 class="sec-title reveal">Words Carved in Ice</h2>
     <p class="sec-intro reveal">
       Original lines written in the spirit of the Seireitei: pride, honor, and the
@@ -1018,7 +1026,7 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
     </p>
 
     <figure class="quote-featured reveal">
-      <blockquote>
+      <blockquote translate="no" lang="ja">
         「 誇りとは纏う鎧ではない。<br>
         凍えた腕でも、決して手放さぬ刃のことだ。 」
       </blockquote>
@@ -1085,7 +1093,7 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 <!-- ================= FOOTER ================= -->
 <footer>
   <svg class="foot-seal" aria-hidden="true"><use href="#flake"/></svg>
-  <p class="foot-jp">舞え、袖白雪</p>
+  <p class="foot-jp" translate="no" lang="ja">舞え、袖白雪</p>
   <p class="foot-note">
     An unofficial fan tribute. <em>Bleach</em>, Rukia Kuchiki and all related concepts
     were created by Tite Kubo; all rights belong to their respective owners.
@@ -1094,109 +1102,7 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
   </p>
 </footer>
 
-<!-- ============ MUSIC ============ -->
-<script>
-(function(){
-  var YT_ID = 'E2c3V6nxjCw';
-  var YT_URL = 'https://www.youtube.com/watch?v=' + YT_ID;
-  var ytPlayer = null, ytReady = false, pendingPlay = false,
-      isPlaying = false, fallbackFrame = null;
-
-  var musicBtn = document.getElementById('musicBtn');
-  var toast = document.getElementById('toast');
-  var toastTimer = null;
-
-  function notify(html){
-    if (!toast) return;
-    toast.innerHTML = html;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 9000);
-  }
-  function updateBtn(){
-    if (!musicBtn) return;
-    musicBtn.classList.toggle('playing', isPlaying);
-    musicBtn.classList.toggle('off', !isPlaying);
-    musicBtn.setAttribute('aria-pressed', isPlaying);
-  }
-  function createFallback(){
-    if (fallbackFrame) return;
-    fallbackFrame = document.createElement('iframe');
-    fallbackFrame.allow = 'autoplay; encrypted-media';
-    fallbackFrame.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:220px;height:124px;border:0;';
-    fallbackFrame.src = 'https://www.youtube.com/embed/' + YT_ID +
-      '?autoplay=1&loop=1&playlist=' + YT_ID + '&controls=0&playsinline=1';
-    document.body.appendChild(fallbackFrame);
-    isPlaying = true;
-    updateBtn();
-  }
-  function startMusic(){
-    pendingPlay = false;
-    if (ytReady && ytPlayer){
-      try{
-        ytPlayer.unMute();
-        ytPlayer.setVolume(75);
-        ytPlayer.playVideo();
-        return;
-      }catch(e){}
-    }
-    createFallback();
-  }
-  function stopMusic(){
-    if (ytReady && ytPlayer){
-      try{ ytPlayer.pauseVideo(); return; }catch(e){}
-    }
-    if (fallbackFrame){
-      fallbackFrame.remove();
-      fallbackFrame = null;
-      isPlaying = false;
-      updateBtn();
-    }
-  }
-
-  window.onYouTubeIframeAPIReady = function(){
-    try{
-      ytPlayer = new YT.Player('yt', {
-        width:'220', height:'124', videoId:YT_ID,
-        playerVars:{ autoplay:0, controls:0, disablekb:1, rel:0, playsinline:1, loop:1, playlist:YT_ID },
-        events:{
-          onReady:function(){
-            ytReady = true;
-            if (pendingPlay && !fallbackFrame) startMusic();
-          },
-          onStateChange:function(e){
-            isPlaying = (e.data === 1);
-            updateBtn();
-          },
-          onError:function(){
-            if (!fallbackFrame){
-              notify('YouTube refused to play this track here. ' +
-                     '<a href="' + YT_URL + '" target="_blank" rel="noopener">Open the song on YouTube ↗</a>');
-              isPlaying = false;
-              updateBtn();
-            }
-          }
-        }
-      });
-    }catch(err){}
-  };
-
-  if (musicBtn){
-    musicBtn.addEventListener('click', function(){
-      if (isPlaying){ stopMusic(); }
-      else { pendingPlay = true; startMusic(); }
-    });
-  }
-
-  window.addEventListener('site-enter', function(e){
-    if (e.detail && e.detail.music){ pendingPlay = true; startMusic(); }
-  });
-  // in case the user clicked ENTER before this script loaded
-  if (window.__siteEntered && window.__wantMusic){ pendingPlay = true; startMusic(); }
-})();
-</script>
-
-<!-- ============ STARS + SNOW ============ -->
+<!-- ============ STARS + SNOW (whole page) ============ -->
 <script>
 (function(){
   var canvas = document.getElementById('snow');
@@ -1218,12 +1124,12 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
     var count = Math.min(Math.round(innerWidth / 10), 130);
     flakes = [];
     for (var i = 0; i < count; i++) flakes.push(spawn(true));
-    var starCount = Math.min(Math.round(innerWidth / 14), 110);
+    var starCount = Math.min(Math.round(innerWidth / 12), 130);
     stars = [];
     for (var j = 0; j < starCount; j++){
       stars.push({
         x: Math.random() * innerWidth,
-        y: Math.random() * innerHeight * 0.75,
+        y: Math.random() * innerHeight,          /* stars everywhere */
         r: 0.4 + Math.random() * 1.1,
         p: Math.random() * Math.PI * 2,
         s: 0.3 + Math.random() * 1.3
@@ -1316,30 +1222,6 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
 })();
 </script>
 
-<!-- ============ HERO PARALLAX ============ -->
-<script>
-(function(){
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var fine = window.matchMedia('(pointer: fine)').matches;
-  if (reduced || !fine) return;
-  var hero = document.getElementById('top');
-  if (!hero) return;
-  var root = hero.style;
-  hero.addEventListener('pointermove', function(e){
-    var r = hero.getBoundingClientRect();
-    var dx = (e.clientX - r.left) / r.width  - 0.5;
-    var dy = (e.clientY - r.top)  / r.height - 0.5;
-    root.setProperty('--mx', (dx * -16) + 'px');
-    root.setProperty('--my', (dy * -10) + 'px');
-    root.setProperty('--fx', (dx * 10) + 'px');
-    root.setProperty('--nx', (dx * 22) + 'px');
-  });
-  hero.addEventListener('pointerleave', function(){
-    ['--mx','--my','--fx','--nx'].forEach(function(v){ root.setProperty(v, '0px'); });
-  });
-})();
-</script>
-
 <!-- ============ SCROLL REVEALS ============ -->
 <script>
 (function(){
@@ -1364,7 +1246,6 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
   }
   window.addEventListener('site-enter', startReveals);
   if (window.__siteEntered) startReveals();
-  // safety net: never leave the page invisible
   setTimeout(startReveals, 6000);
 })();
 </script>
@@ -1407,6 +1288,6 @@ try{ document.getElementById('enterMusic').focus(); }catch(e){}
   });
 })();
 </script>
-<script src="https://www.youtube.com/iframe_api" async></script>
 </body>
 </html>
+</br>
