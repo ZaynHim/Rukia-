@@ -21,7 +21,7 @@
 
 ## 🌙 About
 
-A tribute website for **Rukia Kuchiki** — Captain of the 13th Division,
+A tribute website for **Rukia Kuchiki**, Captain of the 13th Division,
 built with a night-sky theme: falling snow, stars, and moonlight.
 
 ## ❄️ Sections
@@ -34,7 +34,7 @@ built with a night-sky theme: falling snow, stars, and moonlight.
 
 ## ⚔️ Built With
 
-Pure **HTML / CSS / JS** — no frameworks
+Pure **HTML / CSS / JS**, no frameworks
 
 Snowfall & star animations
 
@@ -45,5 +45,3 @@ Background music toggle 🎵
 *"Dance, Sode no Shirayuki."* ❄️
 
 **白雪 — White Snow**
-
-</div>
