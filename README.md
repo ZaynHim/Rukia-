@@ -26,15 +26,11 @@ built with a night-sky theme: falling snow, stars, and moonlight.
 
 ## ❄️ Sections
 
-**About** — Who Rukia is
-
-**Zanpakuto** — Sode no Shirayuki
-
-**Bankai** — Hakka no Togame
-
-**Moments** — Key moments
-
-**Quotes** — Memorable lines
+![About](https://img.shields.io/badge/About-!-0d1b2a?style=for-the-badge&labelColor=1b263b)
+![Zanpakuto](https://img.shields.io/badge/Zanpakuto-Sode%20no%20Shirayuki-0d1b2a?style=for-the-badge&labelColor=1b263b)
+![Bankai](https://img.shields.io/badge/Bankai-Hakka%20no%20Togame-0d1b2a?style=for-the-badge&labelColor=1b263b)
+![Moments](https://img.shields.io/badge/Moments-Key%20moments-0d1b2a?style=for-the-badge&labelColor=1b263b)
+![Quotes](https://img.shields.io/badge/Quotes-Memorable%20lines-0d1b2a?style=for-the-badge&labelColor=1b263b)
 
 ## ⚔️ Built With
 
